@@ -117,8 +117,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'templates')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 path = Path(MEDIA_ROOT)
 path.mkdir(parents=True, exist_ok=True)
-MEDIA_URL = '/templates/'
+MEDIA_URL = '/media/'
+
+
+TEMPLATES_ROOT = os.path.join(BASE_DIR, 'templates')
+path = Path(TEMPLATES_ROOT)
+path.mkdir(parents=True, exist_ok=True)
+TEMPLATE_URL = '/templates/'
