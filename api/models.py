@@ -9,15 +9,14 @@ from django.db import models
 
 
 class Circuits(models.Model):
-    circuitid = models.BigIntegerField(db_column='circuitId', blank=True, null=True)  # Field name made lowercase.
-    circuitref = models.TextField(db_column='circuitRef', blank=True, null=True)  # Field name made lowercase.
-    name = models.TextField(blank=True, null=True)
-    location = models.TextField(blank=True, null=True)
-    country = models.TextField(blank=True, null=True)
-    lat = models.FloatField(blank=True, null=True)
-    lng = models.FloatField(blank=True, null=True)
-    alt = models.TextField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
+    reference = models.TextField()
+    name = models.TextField()
+    location = models.TextField()
+    country = models.TextField()
+    lat = models.FloatField()
+    lng = models.FloatField()
+    alt = models.IntegerField(blank=True, null=True)
+    url = models.TextField()
 
     class Meta:
         managed = False
@@ -25,11 +24,10 @@ class Circuits(models.Model):
 
 
 class ConstructorResults(models.Model):
-    constructorresultsid = models.BigIntegerField(db_column='constructorResultsId', blank=True, null=True)  # Field name made lowercase.
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    constructorid = models.BigIntegerField(db_column='constructorId', blank=True, null=True)  # Field name made lowercase.
-    points = models.FloatField(blank=True, null=True)
-    status = models.TextField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    points = models.FloatField()
+    status = models.TextField(blank=True, null=True) 
 
     class Meta:
         managed = False
@@ -37,13 +35,12 @@ class ConstructorResults(models.Model):
 
 
 class ConstructorStandings(models.Model):
-    constructorstandingsid = models.BigIntegerField(db_column='constructorStandingsId', blank=True, null=True)  # Field name made lowercase.
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    constructorid = models.BigIntegerField(db_column='constructorId', blank=True, null=True)  # Field name made lowercase.
-    points = models.FloatField(blank=True, null=True)
-    position = models.BigIntegerField(blank=True, null=True)
-    positiontext = models.TextField(db_column='positionText', blank=True, null=True)  # Field name made lowercase.
-    wins = models.BigIntegerField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    points = models.FloatField()
+    position = models.IntegerField()
+    position_text = models.TextField()
+    wins = models.IntegerField()
 
     class Meta:
         managed = False
@@ -51,11 +48,10 @@ class ConstructorStandings(models.Model):
 
 
 class Constructors(models.Model):
-    constructorid = models.BigIntegerField(db_column='constructorId', blank=True, null=True)  # Field name made lowercase.
-    constructorref = models.TextField(db_column='constructorRef', blank=True, null=True)  # Field name made lowercase.
-    name = models.TextField(blank=True, null=True)
-    nationality = models.TextField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
+    constructor_ref = models.TextField()
+    name = models.TextField()
+    nationality = models.TextField()
+    url = models.TextField()
 
     class Meta:
         managed = False
@@ -63,13 +59,12 @@ class Constructors(models.Model):
 
 
 class DriverStandings(models.Model):
-    driverstandingsid = models.BigIntegerField(db_column='driverStandingsId', blank=True, null=True)  # Field name made lowercase.
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    points = models.FloatField(blank=True, null=True)
-    position = models.BigIntegerField(blank=True, null=True)
-    positiontext = models.TextField(db_column='positionText', blank=True, null=True)  # Field name made lowercase.
-    wins = models.BigIntegerField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    points = models.FloatField()
+    position = models.BigIntegerField()
+    position_text = models.TextField()
+    wins = models.BigIntegerField()
 
     class Meta:
         managed = False
@@ -77,15 +72,14 @@ class DriverStandings(models.Model):
 
 
 class Drivers(models.Model):
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    driverref = models.TextField(db_column='driverRef', blank=True, null=True)  # Field name made lowercase.
+    driver_ref = models.TextField()
     number = models.TextField(blank=True, null=True)
     code = models.TextField(blank=True, null=True)
-    forename = models.TextField(blank=True, null=True)
-    surname = models.TextField(blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
-    nationality = models.TextField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
+    forename = models.TextField()
+    surname = models.TextField()
+    dob = models.DateField()
+    nationality = models.TextField()
+    url = models.TextField()
 
     class Meta:
         managed = False
@@ -93,12 +87,12 @@ class Drivers(models.Model):
 
 
 class LapTimes(models.Model):
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    lap = models.BigIntegerField(blank=True, null=True)
-    position = models.BigIntegerField(blank=True, null=True)
-    time = models.TextField(blank=True, null=True)
-    milliseconds = models.BigIntegerField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    lap = models.IntegerField()
+    position = models.IntegerField()
+    time = models.TextField()
+    milliseconds = models.BigIntegerField()
 
     class Meta:
         managed = False
@@ -106,13 +100,13 @@ class LapTimes(models.Model):
 
 
 class PitStops(models.Model):
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    stop = models.BigIntegerField(blank=True, null=True)
-    lap = models.BigIntegerField(blank=True, null=True)
-    time = models.TextField(blank=True, null=True)
-    duration = models.TextField(blank=True, null=True)
-    milliseconds = models.BigIntegerField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    stop = models.IntegerField()
+    lap = models.IntegerField()
+    time = models.TextField()
+    duration = models.TextField()
+    milliseconds = models.BigIntegerField()
 
     class Meta:
         managed = False
@@ -120,12 +114,11 @@ class PitStops(models.Model):
 
 
 class Qualifying(models.Model):
-    qualifyid = models.BigIntegerField(db_column='qualifyId', blank=True, null=True)  # Field name made lowercase.
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    constructorid = models.BigIntegerField(db_column='constructorId', blank=True, null=True)  # Field name made lowercase.
-    number = models.BigIntegerField(blank=True, null=True)
-    position = models.BigIntegerField(blank=True, null=True)
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    number = models.IntegerField()
+    position = models.IntegerField()
     q1 = models.TextField(blank=True, null=True)
     q2 = models.TextField(blank=True, null=True)
     q3 = models.TextField(blank=True, null=True)
@@ -136,14 +129,13 @@ class Qualifying(models.Model):
 
 
 class Races(models.Model):
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    year = models.BigIntegerField(blank=True, null=True)
-    round = models.BigIntegerField(blank=True, null=True)
-    circuitid = models.BigIntegerField(db_column='circuitId', blank=True, null=True)  # Field name made lowercase.
-    name = models.TextField(blank=True, null=True)
-    date = models.DateField(blank=True, null=True)
+    season = models.ForeignKey('Seasons',on_delete=models.RESTRICT)
+    round = models.IntegerField()
+    circuit = models.ForeignKey('Circuits',on_delete=models.RESTRICT)
+    name = models.TextField()
+    date = models.DateField()
     time = models.TextField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
+    url = models.TextField()
 
     class Meta:
         managed = False
@@ -151,24 +143,23 @@ class Races(models.Model):
 
 
 class Results(models.Model):
-    resultid = models.BigIntegerField(db_column='resultId', blank=True, null=True)  # Field name made lowercase.
-    raceid = models.BigIntegerField(db_column='raceId', blank=True, null=True)  # Field name made lowercase.
-    driverid = models.BigIntegerField(db_column='driverId', blank=True, null=True)  # Field name made lowercase.
-    constructorid = models.BigIntegerField(db_column='constructorId', blank=True, null=True)  # Field name made lowercase.
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
     number = models.TextField(blank=True, null=True)
-    grid = models.BigIntegerField(blank=True, null=True)
+    grid = models.IntegerField()
     position = models.TextField(blank=True, null=True)
-    positiontext = models.TextField(db_column='positionText', blank=True, null=True)  # Field name made lowercase.
-    positionorder = models.BigIntegerField(db_column='positionOrder', blank=True, null=True)  # Field name made lowercase.
-    points = models.FloatField(blank=True, null=True)
-    laps = models.BigIntegerField(blank=True, null=True)
+    position_text = models.TextField(blank=True, null=True)  
+    position_order = models.IntegerField() 
+    points = models.FloatField()
+    laps = models.IntegerField()
     time = models.TextField(blank=True, null=True)
     milliseconds = models.TextField(blank=True, null=True)
-    fastestlap = models.TextField(db_column='fastestLap', blank=True, null=True)  # Field name made lowercase.
-    rank = models.TextField(blank=True, null=True)
-    fastestlaptime = models.TextField(db_column='fastestLapTime', blank=True, null=True)  # Field name made lowercase.
-    fastestlapspeed = models.TextField(db_column='fastestLapSpeed', blank=True, null=True)  # Field name made lowercase.
-    statusid = models.BigIntegerField(db_column='statusId', blank=True, null=True)  # Field name made lowercase.
+    fastest_lap = models.IntegerField(blank=True, null=True)  
+    rank = models.IntegerField(blank=True, null=True)
+    fastest_lap_time = models.TextField(blank=True, null=True)  
+    fastest_lap_speed = models.TextField(blank=True, null=True)  
+    status = models.ForeignKey('Status',on_delete=models.RESTRICT) 
 
     class Meta:
         managed = False
@@ -176,8 +167,8 @@ class Results(models.Model):
 
 
 class Seasons(models.Model):
-    year = models.BigIntegerField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
+    year = models.TextField()
+    url = models.TextField()
 
     class Meta:
         managed = False
@@ -185,9 +176,28 @@ class Seasons(models.Model):
 
 
 class Status(models.Model):
-    statusid = models.BigIntegerField(db_column='statusId', blank=True, null=True)  # Field name made lowercase.
-    status = models.TextField(blank=True, null=True)
-
+    status = models.TextField()
     class Meta:
         managed = False
         db_table = 'status'
+
+class SprintResults(models.Model):
+    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
+    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    number = models.TextField(blank=True, null=True)
+    grid = models.IntegerField()
+    position = models.TextField(blank=True, null=True)
+    position_text = models.TextField()  
+    position_order = models.IntegerField() 
+    points = models.FloatField()
+    laps = models.IntegerField()
+    time = models.TextField(blank=True, null=True)
+    milliseconds = models.TextField(blank=True, null=True)
+    fastest_lap = models.TextField(blank=True, null=True)  
+    fastest_lap_time = models.TextField(blank=True, null=True)  
+    status = models.ForeignKey('Status',on_delete=models.RESTRICT)  
+
+    class Meta:
+        managed = False
+        db_table = 'sprint_results'
