@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% block css %}{% endblock %}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-danger">
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'icons/formula1-logo.png' %}" alt="Formula1 Logo" height="30" class="d-inline-block align-middle mr-2">
+        Formula1
+      </a>
+    </nav>
+    <div class="container-fluid h-100">
+      <div class="row h-100">
+        <nav class="col-12 col-md-2 bg-dark sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <i class="fas fa-calendar"></i>
+                  Season
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <i class="fas fa-road"></i>
+                  Circuit
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <i class="fas fa-helmet-battle"></i>
+                  Driver
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        
+        
+        <div class="col">
+          {% block content %}
+          {% endblock %}
+        </div>
+        
+      </div>
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="//unpkg.com/globe.gl"></script>
+    <script>
+      $(document).ready(function() {
+        $('#sidebarNav').removeClass('bg-dark');
+        $('.navbar-toggler-icon').addClass('text-white');
+      });
+    </script>
+    <script>
+      const cont = document.getElementById('globeViz');
+      const width = cont.offsetWidth
+      const height = cont.offsetHeight
+      // console.log(width,height)
+      const gData = {{data22|safe}};
+      fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_populated_places_simple.geojson').then(res => res.json()).then(places => {
+        Globe()
+          .width(width)
+          .height(500)
+          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+          .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+          .labelsData(gData)
+          .labelLat('lat')
+          .labelLng('lng')
+          .labelText('name')
+          .labelSize('size')
+          .labelDotRadius('size')
+          .labelColor(() => 'rgba(255, 165, 0, 0.75)')
+          .labelResolution(2)
+          (cont)
+      });
+    </script>
+  </body>
+</html>
