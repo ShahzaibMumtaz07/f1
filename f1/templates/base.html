@@ -65,14 +65,15 @@
     </script>
     <script>
       const cont = document.getElementById('globeViz');
-      const width = cont.offsetWidth
-      const height = cont.offsetHeight
+      const p_cont = document.getElementsByClassName('col')
+      const width = p_cont.offsetWidth
+      const height = p_cont.offsetHeight
       // console.log(width,height)
-      const gData = {{data22|safe}};
+      const gData = {{circuits|safe}};
       fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_populated_places_simple.geojson').then(res => res.json()).then(places => {
         Globe()
           .width(width)
-          .height(500)
+          .height(height)
           .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
           .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
           .labelsData(gData)
