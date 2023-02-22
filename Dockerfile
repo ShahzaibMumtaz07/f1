@@ -27,6 +27,6 @@ EXPOSE 8000
 RUN ["chmod", "+x", "./entrypoints/entrypoint.sh"]
 
 # Collect Static Files
-# RUN SECRET_KEY=foo python manage.py collectstatic --noinput --settings=weather.settings.production
+RUN SECRET_KEY=test python manage.py collectstatic --noinput --settings=f1.settings.production
 
 ENTRYPOINT ["./entrypoints/entrypoint.sh"]
