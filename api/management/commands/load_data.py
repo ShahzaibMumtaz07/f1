@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 
 from api.models import *
 import unicodedata
+from api.utils import NATIONALITIES_COUNTRY_MAPPING
 
 
 
@@ -106,7 +107,8 @@ class DriversLoader(DataLoader):
         id, driver_ref, number, code, forename, surname,dob,nationality, url  = row
         forename = strip_accents(forename)
         surname = strip_accents(surname)
-        driver = Drivers(driver_ref = driver_ref, number = number, code=code, forename = forename,surname=surname, dob=dob,nationality = nationality, url=url) 
+        country = NATIONALITIES_COUNTRY_MAPPING.get(nationality, None)
+        driver = Drivers(driver_ref = driver_ref, number = number, code=code, forename = forename,surname=surname, dob=dob,nationality = nationality, country = country,url=url) 
         driver.id = id
         return driver
     
@@ -282,34 +284,34 @@ def clean_existing_objects():
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        if not Drivers.objects.filter(id = 1).exists():
-            clean_existing_objects()
-            print("Loading statuses...")
-            print(str(StatusLoader().execute()) + " rows loaded")
-            print("Loading seasons...")
-            print(str(SeasonsLoader().execute()) + " rows loaded")
-            print("Loading circuits...")
-            print(str(CircuitsLoader().execute()) + " rows loaded")
-            print("Loading drivers...")
-            print(str(DriversLoader().execute()) + " rows loaded")
-            print("Loading contructors units...")
-            print(str(ConstructorsLoader().execute()) + " rows loaded")
-            print("Loading races...")
-            print(str(RacesLoader().execute()) + " rows loaded")
-            print("Loading results...")
-            print(str(ResultsLoader().execute()) + " rows loaded")
-            print("Loading sprint races results...")
-            print(str(SprintResultsLoader().execute()) + " rows loaded")
-            print("Loading qualifying results...")
-            print(str(QualifyingLoader().execute()) + " rows loaded")
-            print("Loading pitstops results...")
-            print(str(PitStopsLoader().execute()) + " rows loaded")
-            print("Loading laptime results...")
-            print(str(LapTimesLoader().execute()) + " rows loaded")
-            print("Loading driver standings...")
-            print(str(DriverStandingsLoader().execute()) + " rows loaded")
-            print("Loading constructor standings...")
-            print(str(ConstructorStandingsLoader().execute()) + " rows loaded")
-            print("Loading constructor results...")
-            print(str(ConstructorResultsLoader().execute()) + " rows loaded")
+        # if not Drivers.objects.filter(id = 1).exists():
+        clean_existing_objects()
+        print("Loading statuses...")
+        print(str(StatusLoader().execute()) + " rows loaded")
+        print("Loading seasons...")
+        print(str(SeasonsLoader().execute()) + " rows loaded")
+        print("Loading circuits...")
+        print(str(CircuitsLoader().execute()) + " rows loaded")
+        print("Loading drivers...")
+        print(str(DriversLoader().execute()) + " rows loaded")
+        print("Loading contructors units...")
+        print(str(ConstructorsLoader().execute()) + " rows loaded")
+        print("Loading races...")
+        print(str(RacesLoader().execute()) + " rows loaded")
+        print("Loading results...")
+        print(str(ResultsLoader().execute()) + " rows loaded")
+        print("Loading sprint races results...")
+        print(str(SprintResultsLoader().execute()) + " rows loaded")
+        print("Loading qualifying results...")
+        print(str(QualifyingLoader().execute()) + " rows loaded")
+        print("Loading pitstops results...")
+        print(str(PitStopsLoader().execute()) + " rows loaded")
+        print("Loading laptime results...")
+        print(str(LapTimesLoader().execute()) + " rows loaded")
+        print("Loading driver standings...")
+        print(str(DriverStandingsLoader().execute()) + " rows loaded")
+        print("Loading constructor standings...")
+        print(str(ConstructorStandingsLoader().execute()) + " rows loaded")
+        print("Loading constructor results...")
+        print(str(ConstructorResultsLoader().execute()) + " rows loaded")
         

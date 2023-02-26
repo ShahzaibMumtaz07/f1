@@ -1,10 +1,3 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
 
@@ -19,7 +12,7 @@ class Circuits(models.Model):
     url = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'circuits'
 
 
@@ -30,7 +23,7 @@ class ConstructorResults(models.Model):
     status = models.TextField(blank=True, null=True) 
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'constructor_results'
 
 
@@ -43,7 +36,7 @@ class ConstructorStandings(models.Model):
     wins = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'constructor_standings'
 
 
@@ -54,7 +47,7 @@ class Constructors(models.Model):
     url = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'constructors'
 
 
@@ -67,7 +60,7 @@ class DriverStandings(models.Model):
     wins = models.BigIntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'driver_standings'
 
 
@@ -79,10 +72,11 @@ class Drivers(models.Model):
     surname = models.TextField()
     dob = models.DateField()
     nationality = models.TextField()
+    country = models.TextField(blank=True, null=True)
     url = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'drivers'
 
 
@@ -95,7 +89,7 @@ class LapTimes(models.Model):
     milliseconds = models.BigIntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'lap_times'
 
 
@@ -109,7 +103,7 @@ class PitStops(models.Model):
     milliseconds = models.BigIntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'pit_stops'
 
 
@@ -124,7 +118,7 @@ class Qualifying(models.Model):
     q3 = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'qualifying'
 
 
@@ -138,7 +132,7 @@ class Races(models.Model):
     url = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'races'
 
 
@@ -162,7 +156,7 @@ class Results(models.Model):
     status = models.ForeignKey('Status',on_delete=models.RESTRICT) 
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'results'
 
 
@@ -171,14 +165,14 @@ class Seasons(models.Model):
     url = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'seasons'
 
 
 class Status(models.Model):
     status = models.TextField()
     class Meta:
-        managed = False
+        managed = True
         db_table = 'status'
 
 class SprintResults(models.Model):
@@ -199,5 +193,5 @@ class SprintResults(models.Model):
     status = models.ForeignKey('Status',on_delete=models.RESTRICT)  
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'sprint_results'

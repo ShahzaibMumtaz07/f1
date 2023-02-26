@@ -4,3 +4,5 @@ psycopg2-binary==2.8.6
 requests==2.25.1
 python-decouple==3.3
 django-redis==5.2.0
+djangorestframework==3.14.0
+django-filter==21.1
