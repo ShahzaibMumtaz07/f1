@@ -161,8 +161,8 @@ class BaseResult(models.Model):
 
 class Results(BaseResult):
 
-    rank = models.IntegerField()
-    fastest_lap_speed = models.TextField()
+    rank = models.IntegerField(blank=True, null=True)
+    fastest_lap_speed = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
@@ -178,8 +178,8 @@ class SprintResults(BaseResult):
 
 class CombinedResults(BaseResult):
 
-    rank = models.IntegerField()
-    fastest_lap_speed = models.TextField()
+    rank = models.IntegerField(blank=True, null=True)
+    fastest_lap_speed = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
