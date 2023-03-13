@@ -37,7 +37,6 @@ class CircuitsLoader(DataLoader):
         Circuits.objects.bulk_create(batch)
     
     def execute(self):
-        Circuits.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","circuits.csv"),self)
 
 class ConstructorResultsLoader(DataLoader):
@@ -52,7 +51,6 @@ class ConstructorResultsLoader(DataLoader):
         ConstructorResults.objects.bulk_create(batch)
     
     def execute(self):
-        ConstructorResults.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructor_results.csv"),self)
 
 class ConstructorStandingsLoader(DataLoader):
@@ -67,14 +65,14 @@ class ConstructorStandingsLoader(DataLoader):
         ConstructorStandings.objects.bulk_create(batch)
     
     def execute(self):
-        ConstructorStandings.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructor_standings.csv"),self)
 
 class ConstructorsLoader(DataLoader):
     def build(self, row):
         row = [x if x != '\\N' else None for x in row]
         id, constructor_ref, name, nationality, url  = row
-        constructor = Constructors(constructor_ref = constructor_ref, name = name, nationality = nationality, url=url) 
+        country = NATIONALITIES_COUNTRY_MAPPING.get(nationality, None)
+        constructor = Constructors(constructor_ref = constructor_ref, name = name, nationality = nationality, country = country, url=url) 
         constructor.id = id
         return constructor
     
@@ -82,7 +80,6 @@ class ConstructorsLoader(DataLoader):
         Constructors.objects.bulk_create(batch)
     
     def execute(self):
-        Constructors.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructors.csv"),self)
 
 class DriverStandingsLoader(DataLoader):
@@ -97,7 +94,6 @@ class DriverStandingsLoader(DataLoader):
         DriverStandings.objects.bulk_create(batch)
     
     def execute(self):
-        DriverStandings.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","driver_standings.csv"),self)
 
 class DriversLoader(DataLoader):
@@ -116,7 +112,6 @@ class DriversLoader(DataLoader):
         Drivers.objects.bulk_create(batch)
     
     def execute(self):
-        Drivers.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","drivers.csv"),self)
 
 class LapTimesLoader(DataLoader):
@@ -130,7 +125,6 @@ class LapTimesLoader(DataLoader):
         LapTimes.objects.bulk_create(batch)
     
     def execute(self):
-        LapTimes.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","lap_times.csv"),self)
 
 class PitStopsLoader(DataLoader):
@@ -144,7 +138,6 @@ class PitStopsLoader(DataLoader):
         PitStops.objects.bulk_create(batch)
     
     def execute(self):
-        PitStops.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","pit_stops.csv"),self)
 
 class QualifyingLoader(DataLoader):
@@ -159,7 +152,6 @@ class QualifyingLoader(DataLoader):
         Qualifying.objects.bulk_create(batch)
     
     def execute(self):
-        Qualifying.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","qualifying.csv"),self)
 
 class RacesLoader(DataLoader):
@@ -174,7 +166,6 @@ class RacesLoader(DataLoader):
         Races.objects.bulk_create(batch)
     
     def execute(self):
-        Races.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","races.csv"),self)
 
 class ResultsLoader(DataLoader):
@@ -189,7 +180,6 @@ class ResultsLoader(DataLoader):
         Results.objects.bulk_create(batch)
     
     def execute(self):
-        Results.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","results.csv"),self)
 
 class SeasonsLoader(DataLoader):
@@ -203,9 +193,6 @@ class SeasonsLoader(DataLoader):
         Seasons.objects.bulk_create(batch)
     
     def execute(self):
-        Results.objects.all().delete()
-        Races.objects.all().delete()
-        Seasons.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","seasons.csv"),self)
 
 class StatusLoader(DataLoader):
@@ -220,15 +207,16 @@ class StatusLoader(DataLoader):
         Status.objects.bulk_create(batch)
     
     def execute(self):
-        Results.objects.all().delete()
-        Races.objects.all().delete()
-        Status.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","status.csv"),self)
 
 class SprintResultsLoader(DataLoader):
     def build(self, row):
         row = [x if x != '\\N' else None for x in row]
         id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap, fastest_lap_time,status_id = row
+        # r = Results.objects.filter(race_id = race_id,driver_id=driver_id)
+        # if r.count() == 1:
+        #     results_points = r.first().points
+        #     r.update(points=results_points + float(points))
         result = SprintResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap, fastest_lap_time = fastest_lap_time,status_id =status_id)
         result.id = id
         return result
@@ -237,13 +225,34 @@ class SprintResultsLoader(DataLoader):
         SprintResults.objects.bulk_create(batch)
     
     def execute(self):
-        SprintResults.objects.all().delete()
         return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","sprint_results.csv"),self)
 
+class CombinedResultsLoader(DataLoader):
+    def build(self, row):
+        if len(row) == 18:
+            row = [x if x != '\\N' else None for x in row]
+            id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap, rank,fastest_lap_time, fastest_lap_speed,status_id = row
+            result = CombinedResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap,rank = rank, fastest_lap_time = fastest_lap_time,fastest_lap_speed = fastest_lap_speed,status_id =status_id)
+            # result.id = id
+        if len(row) == 16:
+            row = [x if x != '\\N' else None for x in row]
+            id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap,fastest_lap_time, status_id = row
+            result = CombinedResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap,fastest_lap_time = fastest_lap_time,status_id =status_id)       
+        return result
+    
+    def save(self, batch):
+        CombinedResults.objects.bulk_create(batch)
+    
+    def execute(self):
+        print(str(load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","results.csv"),self)) + " rows loaded")
+        print(str(load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","sprint_results.csv"),self)) + " rows loaded")
+        return
+    
+    
 def load_from_csv(csvpath, loader):
     load_batch = []
     bulk_counter = 0
-    MAX_BULK_LOAD = 100
+    MAX_BULK_LOAD = 10000
     with open(csvpath, encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
         row_count = 0
@@ -266,6 +275,7 @@ def strip_accents(s):
    return ''.join(c for c in unicodedata.normalize('NFD', s)
                   if unicodedata.category(c) != 'Mn')
 def clean_existing_objects():
+    CombinedResults.objects.all().delete()
     ConstructorResults.objects.all().delete()
     ConstructorStandings.objects.all().delete()
     DriverStandings.objects.all().delete()
@@ -284,7 +294,6 @@ def clean_existing_objects():
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        # if not Drivers.objects.filter(id = 1).exists():
         clean_existing_objects()
         print("Loading statuses...")
         print(str(StatusLoader().execute()) + " rows loaded")
@@ -314,4 +323,7 @@ class Command(BaseCommand):
         print(str(ConstructorStandingsLoader().execute()) + " rows loaded")
         print("Loading constructor results...")
         print(str(ConstructorResultsLoader().execute()) + " rows loaded")
+        print("Loading combined results...")
+        CombinedResultsLoader().execute()
+        
         
