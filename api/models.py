@@ -13,23 +13,23 @@ class Circuits(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'circuits'
+        db_table = "circuits"
 
 
 class ConstructorResults(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    constructor = models.ForeignKey("Constructors", on_delete=models.RESTRICT)
     points = models.FloatField()
-    status = models.TextField(blank=True, null=True) 
+    status = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'constructor_results'
+        db_table = "constructor_results"
 
 
 class ConstructorStandings(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    constructor = models.ForeignKey("Constructors", on_delete=models.RESTRICT)
     points = models.FloatField()
     position = models.IntegerField()
     position_text = models.TextField()
@@ -37,7 +37,7 @@ class ConstructorStandings(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'constructor_standings'
+        db_table = "constructor_standings"
 
 
 class Constructors(models.Model):
@@ -49,12 +49,12 @@ class Constructors(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'constructors'
+        db_table = "constructors"
 
 
 class DriverStandings(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    driver = models.ForeignKey("Drivers", on_delete=models.RESTRICT)
     points = models.FloatField()
     position = models.BigIntegerField()
     position_text = models.TextField()
@@ -62,7 +62,7 @@ class DriverStandings(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'driver_standings'
+        db_table = "driver_standings"
 
 
 class Drivers(models.Model):
@@ -78,12 +78,12 @@ class Drivers(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'drivers'
+        db_table = "drivers"
 
 
 class LapTimes(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    driver = models.ForeignKey("Drivers", on_delete=models.RESTRICT)
     lap = models.IntegerField()
     position = models.IntegerField()
     time = models.TextField()
@@ -91,12 +91,12 @@ class LapTimes(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'lap_times'
+        db_table = "lap_times"
 
 
 class PitStops(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    driver = models.ForeignKey("Drivers", on_delete=models.RESTRICT)
     stop = models.IntegerField()
     lap = models.IntegerField()
     time = models.TextField()
@@ -105,13 +105,13 @@ class PitStops(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'pit_stops'
+        db_table = "pit_stops"
 
 
 class Qualifying(models.Model):
-    race = models.ForeignKey('Races',on_delete=models.RESTRICT)
-    driver = models.ForeignKey('Drivers',on_delete=models.RESTRICT)
-    constructor = models.ForeignKey('Constructors',on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    driver = models.ForeignKey("Drivers", on_delete=models.RESTRICT)
+    constructor = models.ForeignKey("Constructors", on_delete=models.RESTRICT)
     number = models.IntegerField()
     position = models.IntegerField()
     q1 = models.TextField(blank=True, null=True)
@@ -120,13 +120,13 @@ class Qualifying(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'qualifying'
+        db_table = "qualifying"
 
 
 class Races(models.Model):
-    season = models.ForeignKey('Seasons',on_delete=models.RESTRICT)
+    season = models.ForeignKey("Seasons", on_delete=models.RESTRICT)
     round = models.IntegerField()
-    circuit = models.ForeignKey('Circuits',on_delete=models.RESTRICT)
+    circuit = models.ForeignKey("Circuits", on_delete=models.RESTRICT)
     name = models.TextField()
     date = models.DateField()
     time = models.TextField(blank=True, null=True)
@@ -134,14 +134,13 @@ class Races(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'races'
+        db_table = "races"
 
 
 class BaseResult(models.Model):
-
-    race = models.ForeignKey('Races', on_delete=models.RESTRICT)
-    driver = models.ForeignKey('Drivers', on_delete=models.RESTRICT)
-    constructor = models.ForeignKey('Constructors', on_delete=models.RESTRICT)
+    race = models.ForeignKey("Races", on_delete=models.RESTRICT)
+    driver = models.ForeignKey("Drivers", on_delete=models.RESTRICT)
+    constructor = models.ForeignKey("Constructors", on_delete=models.RESTRICT)
     number = models.TextField(blank=True, null=True)
     grid = models.IntegerField()
     position = models.TextField(blank=True, null=True)
@@ -153,37 +152,34 @@ class BaseResult(models.Model):
     milliseconds = models.TextField(blank=True, null=True)
     fastest_lap = models.IntegerField(blank=True, null=True)
     fastest_lap_time = models.TextField(blank=True, null=True)
-    status = models.ForeignKey('Status', on_delete=models.RESTRICT)
+    status = models.ForeignKey("Status", on_delete=models.RESTRICT)
 
     class Meta:
         abstract = True
 
 
 class Results(BaseResult):
-
     rank = models.IntegerField(blank=True, null=True)
     fastest_lap_speed = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'results'
+        db_table = "results"
 
 
 class SprintResults(BaseResult):
-
     class Meta:
         managed = True
-        db_table = 'sprint_results'
+        db_table = "sprint_results"
 
 
 class CombinedResults(BaseResult):
-
     rank = models.IntegerField(blank=True, null=True)
     fastest_lap_speed = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'combined_results'
+        db_table = "combined_results"
 
 
 class Seasons(models.Model):
@@ -192,11 +188,12 @@ class Seasons(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'seasons'
+        db_table = "seasons"
 
 
 class Status(models.Model):
     status = models.TextField()
+
     class Meta:
         managed = True
-        db_table = 'status'
+        db_table = "status"
