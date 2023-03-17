@@ -10,9 +10,7 @@ import unicodedata
 from api.utils import NATIONALITIES_COUNTRY_MAPPING
 
 
-
 class DataLoader(ABC):
-
     @abstractmethod
     def build(self, row):
         pass
@@ -24,231 +22,523 @@ class DataLoader(ABC):
     @abstractmethod
     def execute(self):
         pass
+
 
 class CircuitsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, ref, name, location, country, lat, lng, alt, url  = row
-        circuit = Circuits(reference = ref, name = name, location = location, country = country, lat = lat,lng = lng, alt = alt, url = url)
+        row = [x if x != "\\N" else None for x in row]
+        id, ref, name, location, country, lat, lng, alt, url = row
+        circuit = Circuits(
+            reference=ref,
+            name=name,
+            location=location,
+            country=country,
+            lat=lat,
+            lng=lng,
+            alt=alt,
+            url=url,
+        )
         circuit.id = id
         return circuit
-    
+
     def save(self, batch):
         Circuits.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","circuits.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "circuits.csv"), self
+        )
+
 
 class ConstructorResultsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id, constructor_id, points, status  = row
-        constructor_results = ConstructorResults(race_id = race_id, constructor_id = constructor_id, points = points, status = status) 
+        row = [x if x != "\\N" else None for x in row]
+        id, race_id, constructor_id, points, status = row
+        constructor_results = ConstructorResults(
+            race_id=race_id, constructor_id=constructor_id, points=points, status=status
+        )
         constructor_results.id = id
         return constructor_results
-    
+
     def save(self, batch):
         ConstructorResults.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructor_results.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "constructor_results.csv"),
+            self,
+        )
+
 
 class ConstructorStandingsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id, constructor_id, points, position, position_text, wins  = row
-        constructor_standings = ConstructorStandings(race_id = race_id, constructor_id = constructor_id, points = points,position = position,position_text = position_text, wins = wins) 
+        row = [x if x != "\\N" else None for x in row]
+        id, race_id, constructor_id, points, position, position_text, wins = row
+        constructor_standings = ConstructorStandings(
+            race_id=race_id,
+            constructor_id=constructor_id,
+            points=points,
+            position=position,
+            position_text=position_text,
+            wins=wins,
+        )
         constructor_standings.id = id
         return constructor_standings
-    
+
     def save(self, batch):
         ConstructorStandings.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructor_standings.csv"),self)
+        return load_from_csv(
+            os.path.join(
+                settings.BASE_DIR, "media", "csv", "constructor_standings.csv"
+            ),
+            self,
+        )
+
 
 class ConstructorsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, constructor_ref, name, nationality, url  = row
+        row = [x if x != "\\N" else None for x in row]
+        id, constructor_ref, name, nationality, url = row
         country = NATIONALITIES_COUNTRY_MAPPING.get(nationality, None)
-        constructor = Constructors(constructor_ref = constructor_ref, name = name, nationality = nationality, country = country, url=url) 
+        constructor = Constructors(
+            constructor_ref=constructor_ref,
+            name=name,
+            nationality=nationality,
+            country=country,
+            url=url,
+        )
         constructor.id = id
         return constructor
-    
+
     def save(self, batch):
         Constructors.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","constructors.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "constructors.csv"), self
+        )
+
 
 class DriverStandingsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id,driver_id, points, position, position_text, wins  = row
-        driver_standings = DriverStandings(race_id = race_id, driver_id = driver_id, points = points,position = position,position_text = position_text, wins = wins) 
+        row = [x if x != "\\N" else None for x in row]
+        id, race_id, driver_id, points, position, position_text, wins = row
+        driver_standings = DriverStandings(
+            race_id=race_id,
+            driver_id=driver_id,
+            points=points,
+            position=position,
+            position_text=position_text,
+            wins=wins,
+        )
         driver_standings.id = id
         return driver_standings
-    
+
     def save(self, batch):
         DriverStandings.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","driver_standings.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "driver_standings.csv"),
+            self,
+        )
+
 
 class DriversLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        
-        id, driver_ref, number, code, forename, surname,dob,nationality, url  = row
+        row = [x if x != "\\N" else None for x in row]
+
+        id, driver_ref, number, code, forename, surname, dob, nationality, url = row
         forename = strip_accents(forename)
         surname = strip_accents(surname)
         country = NATIONALITIES_COUNTRY_MAPPING.get(nationality, None)
-        driver = Drivers(driver_ref = driver_ref, number = number, code=code, forename = forename,surname=surname, dob=dob,nationality = nationality, country = country,url=url) 
+        driver = Drivers(
+            driver_ref=driver_ref,
+            number=number,
+            code=code,
+            forename=forename,
+            surname=surname,
+            dob=dob,
+            nationality=nationality,
+            country=country,
+            url=url,
+        )
         driver.id = id
         return driver
-    
+
     def save(self, batch):
         Drivers.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","drivers.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "drivers.csv"), self
+        )
+
 
 class LapTimesLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        race_id, driver_id, lap, position, time, milliseconds  = row
-        lap_times = LapTimes(race_id = race_id, driver_id = driver_id, lap = lap,position = position, time = time, milliseconds = milliseconds) 
+        row = [x if x != "\\N" else None for x in row]
+        race_id, driver_id, lap, position, time, milliseconds = row
+        lap_times = LapTimes(
+            race_id=race_id,
+            driver_id=driver_id,
+            lap=lap,
+            position=position,
+            time=time,
+            milliseconds=milliseconds,
+        )
         return lap_times
-    
+
     def save(self, batch):
         LapTimes.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","lap_times.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "lap_times.csv"), self
+        )
+
 
 class PitStopsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        race_id, driver_id, stop, lap, time, duration,  milliseconds  = row
-        pit_stops = PitStops(race_id = race_id, driver_id = driver_id, stop = stop, lap = lap,duration =duration, time = time, milliseconds = milliseconds) 
+        row = [x if x != "\\N" else None for x in row]
+        race_id, driver_id, stop, lap, time, duration, milliseconds = row
+        pit_stops = PitStops(
+            race_id=race_id,
+            driver_id=driver_id,
+            stop=stop,
+            lap=lap,
+            duration=duration,
+            time=time,
+            milliseconds=milliseconds,
+        )
         return pit_stops
-    
+
     def save(self, batch):
         PitStops.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","pit_stops.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "pit_stops.csv"), self
+        )
+
 
 class QualifyingLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id, driver_id, constructor_id, number, position, q1,q2,q3 = row
-        qualifying = Qualifying(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number = number, position = position, q1 =q1, q2= q2,q3 = q3) 
+        row = [x if x != "\\N" else None for x in row]
+        id, race_id, driver_id, constructor_id, number, position, q1, q2, q3 = row
+        qualifying = Qualifying(
+            race_id=race_id,
+            driver_id=driver_id,
+            constructor_id=constructor_id,
+            number=number,
+            position=position,
+            q1=q1,
+            q2=q2,
+            q3=q3,
+        )
         qualifying.id = id
         return qualifying
-    
+
     def save(self, batch):
         Qualifying.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","qualifying.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "qualifying.csv"), self
+        )
+
 
 class RacesLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, year,round, circuit_id, name, date, time , url, fp1_date, fp1_time,fp2_date, fp2_time,fp3_date, fp3_time,quali_date, quali_time,sprint_date, sprint_time= row
-        race = Races(season = Seasons.objects.get(year = year), round = round, circuit_id= circuit_id, name = name, date=date, time = time, url = url)
+        row = [x if x != "\\N" else None for x in row]
+        (
+            id,
+            year,
+            round,
+            circuit_id,
+            name,
+            date,
+            time,
+            url,
+            fp1_date,
+            fp1_time,
+            fp2_date,
+            fp2_time,
+            fp3_date,
+            fp3_time,
+            quali_date,
+            quali_time,
+            sprint_date,
+            sprint_time,
+        ) = row
+        race = Races(
+            season=Seasons.objects.get(year=year),
+            round=round,
+            circuit_id=circuit_id,
+            name=name,
+            date=date,
+            time=time,
+            url=url,
+        )
         race.id = id
         return race
-    
+
     def save(self, batch):
         Races.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","races.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "races.csv"), self
+        )
+
 
 class ResultsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap, rank,fastest_lap_time, fastest_lap_speed,status_id = row
-        result = Results(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap,rank = rank, fastest_lap_time = fastest_lap_time,fastest_lap_speed = fastest_lap_speed,status_id =status_id)
+        row = [x if x != "\\N" else None for x in row]
+        (
+            id,
+            race_id,
+            driver_id,
+            constructor_id,
+            number,
+            grid,
+            position,
+            position_text,
+            position_order,
+            points,
+            laps,
+            time,
+            milliseconds,
+            fastest_lap,
+            rank,
+            fastest_lap_time,
+            fastest_lap_speed,
+            status_id,
+        ) = row
+        result = Results(
+            race_id=race_id,
+            driver_id=driver_id,
+            constructor_id=constructor_id,
+            number=number,
+            grid=grid,
+            position=position,
+            position_text=position_text,
+            position_order=position_order,
+            points=points,
+            laps=laps,
+            time=time,
+            milliseconds=milliseconds,
+            fastest_lap=fastest_lap,
+            rank=rank,
+            fastest_lap_time=fastest_lap_time,
+            fastest_lap_speed=fastest_lap_speed,
+            status_id=status_id,
+        )
         result.id = id
         return result
-    
+
     def save(self, batch):
         Results.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","results.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "results.csv"), self
+        )
+
 
 class SeasonsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        year, url  = row
-        season = Seasons(year = year, url = url)
+        row = [x if x != "\\N" else None for x in row]
+        year, url = row
+        season = Seasons(year=year, url=url)
         return season
-    
+
     def save(self, batch):
         Seasons.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","seasons.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "seasons.csv"), self
+        )
+
 
 class StatusLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, status  = row
-        status_obj = Status(status = status)
+        row = [x if x != "\\N" else None for x in row]
+        id, status = row
+        status_obj = Status(status=status)
         status_obj.id = id
         return status_obj
 
     def save(self, batch):
         Status.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","status.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "status.csv"), self
+        )
+
 
 class SprintResultsLoader(DataLoader):
     def build(self, row):
-        row = [x if x != '\\N' else None for x in row]
-        id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap, fastest_lap_time,status_id = row
-        # r = Results.objects.filter(race_id = race_id,driver_id=driver_id)
-        # if r.count() == 1:
-        #     results_points = r.first().points
-        #     r.update(points=results_points + float(points))
-        result = SprintResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap, fastest_lap_time = fastest_lap_time,status_id =status_id)
+        row = [x if x != "\\N" else None for x in row]
+        (
+            id,
+            race_id,
+            driver_id,
+            constructor_id,
+            number,
+            grid,
+            position,
+            position_text,
+            position_order,
+            points,
+            laps,
+            time,
+            milliseconds,
+            fastest_lap,
+            fastest_lap_time,
+            status_id,
+        ) = row
+        result = SprintResults(
+            race_id=race_id,
+            driver_id=driver_id,
+            constructor_id=constructor_id,
+            number=number,
+            grid=grid,
+            position=position,
+            position_text=position_text,
+            position_order=position_order,
+            points=points,
+            laps=laps,
+            time=time,
+            milliseconds=milliseconds,
+            fastest_lap=fastest_lap,
+            fastest_lap_time=fastest_lap_time,
+            status_id=status_id,
+        )
         result.id = id
         return result
-    
+
     def save(self, batch):
         SprintResults.objects.bulk_create(batch)
-    
+
     def execute(self):
-        return load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","sprint_results.csv"),self)
+        return load_from_csv(
+            os.path.join(settings.BASE_DIR, "media", "csv", "sprint_results.csv"), self
+        )
+
 
 class CombinedResultsLoader(DataLoader):
     def build(self, row):
         if len(row) == 18:
-            row = [x if x != '\\N' else None for x in row]
-            id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap, rank,fastest_lap_time, fastest_lap_speed,status_id = row
-            result = CombinedResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap,rank = rank, fastest_lap_time = fastest_lap_time,fastest_lap_speed = fastest_lap_speed,status_id =status_id)
-            # result.id = id
+            row = [x if x != "\\N" else None for x in row]
+            (
+                id,
+                race_id,
+                driver_id,
+                constructor_id,
+                number,
+                grid,
+                position,
+                position_text,
+                position_order,
+                points,
+                laps,
+                time,
+                milliseconds,
+                fastest_lap,
+                rank,
+                fastest_lap_time,
+                fastest_lap_speed,
+                status_id,
+            ) = row
+            result = CombinedResults(
+                race_id=race_id,
+                driver_id=driver_id,
+                constructor_id=constructor_id,
+                number=number,
+                grid=grid,
+                position=position,
+                position_text=position_text,
+                position_order=position_order,
+                points=points,
+                laps=laps,
+                time=time,
+                milliseconds=milliseconds,
+                fastest_lap=fastest_lap,
+                rank=rank,
+                fastest_lap_time=fastest_lap_time,
+                fastest_lap_speed=fastest_lap_speed,
+                status_id=status_id,
+            )
         if len(row) == 16:
-            row = [x if x != '\\N' else None for x in row]
-            id, race_id, driver_id, constructor_id, number, grid, position, position_text, position_order, points,laps, time, milliseconds, fastest_lap,fastest_lap_time, status_id = row
-            result = CombinedResults(race_id = race_id, driver_id = driver_id, constructor_id = constructor_id, number= number, grid = grid, position = position, position_text = position_text, position_order = position_order, points = points, laps = laps, time = time, milliseconds = milliseconds,fastest_lap = fastest_lap,fastest_lap_time = fastest_lap_time,status_id =status_id)       
+            row = [x if x != "\\N" else None for x in row]
+            (
+                id,
+                race_id,
+                driver_id,
+                constructor_id,
+                number,
+                grid,
+                position,
+                position_text,
+                position_order,
+                points,
+                laps,
+                time,
+                milliseconds,
+                fastest_lap,
+                fastest_lap_time,
+                status_id,
+            ) = row
+            result = CombinedResults(
+                race_id=race_id,
+                driver_id=driver_id,
+                constructor_id=constructor_id,
+                number=number,
+                grid=grid,
+                position=position,
+                position_text=position_text,
+                position_order=position_order,
+                points=points,
+                laps=laps,
+                time=time,
+                milliseconds=milliseconds,
+                fastest_lap=fastest_lap,
+                fastest_lap_time=fastest_lap_time,
+                status_id=status_id,
+            )
         return result
-    
+
     def save(self, batch):
         CombinedResults.objects.bulk_create(batch)
-    
+
     def execute(self):
-        print(str(load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","results.csv"),self)) + " rows loaded")
-        print(str(load_from_csv(os.path.join(settings.BASE_DIR,"media","csv","sprint_results.csv"),self)) + " rows loaded")
+        print(
+            str(
+                load_from_csv(
+                    os.path.join(settings.BASE_DIR, "media", "csv", "results.csv"), self
+                )
+            )
+            + " rows loaded"
+        )
+        print(
+            str(
+                load_from_csv(
+                    os.path.join(
+                        settings.BASE_DIR, "media", "csv", "sprint_results.csv"
+                    ),
+                    self,
+                )
+            )
+            + " rows loaded"
+        )
         return
-    
-    
+
+
 def load_from_csv(csvpath, loader):
     load_batch = []
     bulk_counter = 0
@@ -271,9 +561,13 @@ def load_from_csv(csvpath, loader):
         loader.save(load_batch)
     return row_count
 
+
 def strip_accents(s):
-   return ''.join(c for c in unicodedata.normalize('NFD', s)
-                  if unicodedata.category(c) != 'Mn')
+    return "".join(
+        c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn"
+    )
+
+
 def clean_existing_objects():
     CombinedResults.objects.all().delete()
     ConstructorResults.objects.all().delete()
@@ -291,8 +585,8 @@ def clean_existing_objects():
     Seasons.objects.all().delete()
     Status.objects.all().delete()
 
-class Command(BaseCommand):
 
+class Command(BaseCommand):
     def handle(self, *args, **options):
         clean_existing_objects()
         print("Loading statuses...")
@@ -325,5 +619,3 @@ class Command(BaseCommand):
         print(str(ConstructorResultsLoader().execute()) + " rows loaded")
         print("Loading combined results...")
         CombinedResultsLoader().execute()
-        
-        
