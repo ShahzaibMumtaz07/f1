@@ -16,7 +16,7 @@ services:
     entrypoint:
       - ./entrypoints/entrypoint.sh
   db:
-    image: postgres:13-alpine
+    image: postgres:latest
     ports:
       - "5432"
     volumes:
