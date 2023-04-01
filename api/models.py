@@ -143,7 +143,7 @@ class BaseResult(models.Model):
     constructor = models.ForeignKey("Constructors", on_delete=models.RESTRICT)
     number = models.TextField(blank=True, null=True)
     grid = models.IntegerField()
-    position = models.TextField(blank=True, null=True)
+    position = models.IntegerField(blank=True, null=True)
     position_text = models.TextField(blank=True, null=True)
     position_order = models.IntegerField()
     points = models.FloatField()
